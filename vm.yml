@@ -17,7 +17,7 @@
           --name {{ vm_name }} \
           --ram {{ vm_ram }} \
           --vcpus {{ vm_cpu }} \
-          --disk path=/var/lib/libvirt/images/test-vm.qcow2,size=20,format=qcow2 \
+          --disk path=/var/lib/libvirt/images/test-vm1.qcow2,size=20,format=qcow2 \
           --cdrom /home/dell/Downloads/ubuntu-20.04.6-desktop-amd64.iso \
           --os-variant ubuntu20.04 \
           --network bridge=virbr0,model=virtio \
