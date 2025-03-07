@@ -1,0 +1,30 @@
+---
+- name: Create a VM on KVM
+  hosts: localhost
+  become: yes
+  vars:
+    vm_name: "{{ lookup('env', 'VM_NAME') }}"
+    vm_ram: "{{ lookup('env', 'VM_RAM') }}"
+    vm_cpu: "{{ lookup('env', 'VM_CPU') }}"
+  tasks:
+    - name: Ensure VM does not already exist
+      command: virsh list --all
+      register: existing_vms
+
+    - name: Create VM if not exists
+      ansible.builtin.shell: |
+        virt-install \
+          --name {{ vm_name }} \
+          --ram {{ vm_ram }} \
+          --vcpus {{ vm_cpu }} \
+          --disk path=/var/lib/libvirt/images/test-vm.qcow2,size=20,format=qcow2 \
+          --cdrom /home/dell/Downloads/ubuntu-20.04.6-desktop-amd64.iso \
+          --os-variant ubuntu20.04 \
+          --network bridge=virbr0,model=virtio \
+          --graphics vnc \
+          --noautoconsole
+      when: "'test-vm' not in existing_vms.stdout_lines | map('trim')"
+
+    - name: Print status
+      debug:
+        msg: "VM test-vm created successfully!"
